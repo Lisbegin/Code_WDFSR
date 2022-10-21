@@ -1,6 +1,6 @@
 
 **News:** WDFSR:Normaling Flow based on Wavelet-Domain for Super-Resolution
-# Setup: Data, Environment, PyTorch Demo
+# WDFSR:Normaling Flow based on Wavelet-Domain for Super-Resolution
 <br>
 We mainly design our code based on the SRFlow code. If you want to see its base code, you can go to their source code.
 <br>
@@ -40,7 +40,7 @@ For testing, we apply WDFSR to the full images on GPU with 20G of memory.
 
 <br><br>
 
-# Training for SR: Reproduce or train on your Data
+
 The following commands train the Super-Resolution network using Normalizing Flow in PyTorch:
 ```bash
 source myenv/bin/activate                      # Use the env you created using setup.sh
@@ -53,5 +53,6 @@ python train.py -opt ./confs/WDFSR+_8X.yml      # Diverse Images 8X (Dataset Inc
 python train.py -opt ./confs/WDFSR++_8X.yml      # Diverse Images 8X (Dataset Included)
 ```
 - To reduce the GPU memory, reduce the batch size in the yml file.
+# Low-light enhancement
 For the Low-light enhancement task, we modify the up-sampling module in the encoder into a down-sampling module, and the other structures are similar. For the training and testing process, we only need to modify the training and testing sets. 
 "code_ low_light" file contains the low light enhancement training and test code.
