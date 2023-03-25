@@ -1,0 +1,139 @@
+# Copyright (c) 2020 Huawei Technologies Co., Ltd.
+# Licensed under CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0 International) (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+#
+# The code is released for academic research use only. For commercial use, please contact Huawei Technologies Co., Ltd.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# This file contains content licensed by https://github.com/xinntao/BasicSR/blob/master/LICENSE/LICENSE
+
+#### general settings
+#name: train_4_7_3_1e4_no_rrdb_studentz(20)+two_split_floor+qr+no_decay+l2:1000
+name: train_4_7_3_1e4_no_rrdb_studentz(20)+two_split_floor+1X1+no_decay+CABM(200k)+l1:15+nll3e-4
+use_tb_logger: true
+model: SRFlow
+distortion: sr
+scale: 8
+gpu_ids: [1]
+
+#### datasets
+datasets:
+  train:
+    name: CelebA_160_tr
+    mode: LRHR_PKL
+    dataroot_GT: /home/sci_1/Lis/SRFlow4_/datasets/DF2K-tr.pklv4
+    dataroot_LQ: /home/sci_1/Lis/SRFlow4_/datasets/DF2K-tr_X8.pklv4
+    quant: 32
+
+    use_shuffle: true
+    n_workers: 3  # per GPU
+    batch_size: 12
+    GT_size: 160
+    use_flip: true
+    color: RGB
+  val:
+    name: CelebA_160_va
+    mode: LRHR_PKL
+    dataroot_GT: /home/sci_1/Lis/SRFlow4_/datasets/DF2K-tr.pklv4
+    dataroot_LQ: /home/sci_1/Lis/SRFlow4_/datasets/DF2K-tr_X8.pklv4
+    quant: 32
+    n_max: 20
+
+#### Test Settings
+dataroot_GT: /home/sci_1/Lis/SRFlow4_/datasets/div2k-validation-modcrop8-gt
+dataroot_LR: /home/sci_1/Lis/SRFlow4_/datasets/div2k-validation-modcrop8-x8
+model_path: /home/sci_1/Lis/SRFlow8_CABM/experiments/train_4_7_3_1e4_no_rrdb_studentz(20)+two_split_floor+1X1+no_decay+CABM(200k)+l1:15+nll3e-4/models/latest_G.pth
+heat: 0 # This is the standard deviation of the latent vectors
+
+#### network structures
+network_G:
+  which_model_G: SRFlowNet
+  in_nc: 3
+  out_nc: 3
+  nf: 64
+  nb: 23
+  upscale: 4
+  train_RRDB: false
+  train_RRDB_delay: 1
+
+  flow:
+    version: 1 #1 reprensent cabm in affine module #2 represent cabm not in affine module
+    K1: 6
+    K2: 6
+    K3: 6
+    K4: 6  #6
+    K_2: 6 #6
+    K_3: 6 #9
+    K_4: 6
+    L: 4
+    noInitialInj: true
+    coupling: CondAffineSeparatedAndCond
+    additionalFlowNoAffine: 2
+    split:
+      enable: true
+    fea_up0: true
+    stackRRDB:
+      blocks: [ 1, 3, 5, 7 ]
+      concat: true
+
+#### path
+path:
+  #pretrain_model_G: /home/sci_1/Lis/SRFlow8_CABM/experiments/train_4_7_3_1e4_no_rrdb_studentz(20)+two_split_floor+1X1+no_decay+CABM(200k)+l1:15+nll3e-4/models/latest_G.pth
+  #pretrain_model_G: ../experiments/train_4_7_3_1e4_no_rrdb_studentz(20)+two_split_floor+qr+no_decay+SE/models/100000_G.pth
+  strict_load: true
+  resume_state: auto
+  load_submodule: up #RRDB
+
+#### training settings: learning rate scheme, loss
+train:
+  manual_seed: 10
+  lr_G: !!float 1.0e-5
+  weight_decay_G: 0
+  beta1: 0.9
+  beta2: 0.99
+  lr_scheme: MultiStepLR
+  warmup_iter: -1  # no warm up
+  lr_steps_rel: [0,3,0.5,0.65,0.75,0.85,0.9,0.95]
+  lr_gamma: 0.5
+
+  #weight_fl: !!float 2e-3
+  weight_fl: !!float 3e-4
+
+  weight_l1: 15.0     
+  pixel_criterion_hr: l1
+  eps_std_reverse: 0.9
+  feature_weight: 0
+  feature_criterion: l1
+  
+
+  gan_weight: 0
+  gan_type: gan
+  niter: 30000
+  val_freq: 1000
+  
+
+  lr_D: !!float 5e-5
+  beta1_D: 0.9
+  beta2_D: 0.99
+  D_update_ratio: 1
+  D_init_iters: 1500
+#### validation settings
+val:
+  heats: [  0.9 ]
+  n_sample: 1
+
+#### logger
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 1e3
+network_D:
+  which_model_D: discriminator_vgg_160
+  in_nc: 3
+  nf: 64
