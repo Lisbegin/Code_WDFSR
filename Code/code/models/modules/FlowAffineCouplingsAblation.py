@@ -93,8 +93,7 @@ class CondAffineSeparatedAndCond(nn.Module):
             self.model3=None
         if self.channels_for_nn is None:
             self.channels_for_nn = self.in_channels // 2
-        self.model1=CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1)
-        self.model2=CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1)
+        
         
         self.fAffine = self.F(in_channels=self.channels_for_nn + self.in_channels_rrdb,
                               out_channels=self.channels_for_co * 2,
