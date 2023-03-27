@@ -35,7 +35,7 @@ datasets:
 
     use_shuffle: true
     n_workers: 3  # per GPU
-    batch_size: 1
+    batch_size: 12
     GT_size: 160
     use_flip: true
     color: RGB
@@ -88,7 +88,7 @@ network_G:
 #### path
 path:
   
-  #pretrain_model_G: ../pretrained_models/RRDB_DF2K_4X.pth
+  pretrain_model_G: ../pretrained_models/RRDB_DF2K_4X.pth
   strict_load: false
   resume_state: auto
 
