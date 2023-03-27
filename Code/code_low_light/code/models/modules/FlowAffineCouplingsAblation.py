@@ -82,11 +82,13 @@ class CondAffineSeparatedAndCond(nn.Module):
             self.model1=CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1)
             self.model2=CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1)
         elif self.version==2:
-            self.model3=CBAMBlock("Conv", 3, channels = 320, gamma = 2, b = 1)
+            #self.model3=CBAMBlock("Conv", 3, channels = 320, gamma = 2, b = 1)
             self.spatial1=Spatial_Attention_Module(k = 3)
             self.spatial2=Spatial_Attention_Module(k = 3)
             self.channel1=Channel_Attention_Module_Conv(channels = self.in_channels_rrdb, gamma = 2, b = 1)
             self.channel2=Channel_Attention_Module_Conv(channels = self.in_channels_rrdb, gamma = 2, b = 1)
+            self.model1=None
+            self.model2=None
         else:
             self.model1=None
             self.model2=None
@@ -109,7 +111,7 @@ class CondAffineSeparatedAndCond(nn.Module):
 
     def forward(self, input: torch.Tensor, logdet=None, reverse=False, ft=None):
         if(self.version==2):
-            ft=self.model3(ft)
+            #ft=self.model3(ft)
             ft2=ft
             ft1_after_channel=self.channel1(ft)
             ft1=self.spatial1(ft1_after_channel)
