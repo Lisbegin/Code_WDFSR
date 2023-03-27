@@ -87,6 +87,8 @@ class CondAffineSeparatedAndCond(nn.Module):
             self.spatial2=Spatial_Attention_Module(k = 3)
             self.channel1=Channel_Attention_Module_Conv(channels = self.in_channels_rrdb, gamma = 2, b = 1)
             self.channel2=Channel_Attention_Module_Conv(channels = self.in_channels_rrdb, gamma = 2, b = 1)
+            self.model1=None
+            self.model2=None
         else:
             self.model1=None
             self.model2=None
