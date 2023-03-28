@@ -34,8 +34,8 @@ password：mpdr
 ```bash
 source myenv/bin/activate                      # Use the env you created using setup.sh
 cd code  
-CUDA_VISIBLE_DEVICES=0 python test.py ./confs/WDFSR_4X.yml      # Diverse Images 4X (Dataset Included)  
-CUDA_VISIBLE_DEVICES=0 python test.py ./confs/WDFSR_8X.yml      # Diverse Images 8X (Dataset Included)
+CUDA_VISIBLE_DEVICES=0 python test.py ./confs/test_WDFSR_4X.yml      # Diverse Images 4X (Dataset Included)  
+CUDA_VISIBLE_DEVICES=0 python test.py ./confs/test_WDFSR_8X.yml      # Diverse Images 8X (Dataset Included)
 ```
 For testing, we apply WDFSR to the full images on GPU with 20G of memory.
 
