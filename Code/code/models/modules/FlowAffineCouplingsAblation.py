@@ -79,6 +79,9 @@ class CondAffineSeparatedAndCond(nn.Module):
         if self.channels_for_nn is None:
             self.channels_for_nn = self.in_channels // 2
         if self.version==1:
+            self.model1=CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1)
+            self.model2=CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1)
+        else if self.version==3:
             self.model1=nn.Sequential(CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1))
             self.model2=nn.Sequential(CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.hidden_channels, gamma = 2, b = 1))
         elif self.version==2:
