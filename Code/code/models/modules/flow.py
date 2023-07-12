@@ -188,13 +188,13 @@ class HaarDownsampling(nn.Module):
         if not reverse:
             self.elements = x.shape[1] * x.shape[2] * x.shape[3]
             self.last_jac = self.elements / 4 * np.log(16.)
-            #问题在于要不要乘上像素
+            #
             out = F.conv2d(x, self.haar_weights, bias=None, stride=2, groups=self.channel_in) / 4.0
             out = out.reshape([x.shape[0], self.channel_in, 4, x.shape[2] // 2, x.shape[3] // 2])
             out = torch.transpose(out, 1, 2)
             out = out.reshape([x.shape[0], self.channel_in * 4, x.shape[2] // 2, x.shape[3] // 2])
 
-            return out,logdet-self.last_jac
+            return out,logdet+self.last_jac
             #return out,logdet-+self.last_jac
            
         else:
@@ -203,5 +203,5 @@ class HaarDownsampling(nn.Module):
             out = x.reshape([x.shape[0], 4, self.channel_in, x.shape[2], x.shape[3]])
             out = torch.transpose(out, 1, 2)
             out = out.reshape([x.shape[0], self.channel_in * 4, x.shape[2], x.shape[3]])
-            return F.conv_transpose2d(out, self.haar_weights, bias=None, stride=2, groups = self.channel_in),logdet+self.last_jac
+            return F.conv_transpose2d(out, self.haar_weights, bias=None, stride=2, groups = self.channel_in),logdet-self.last_jac
             #return F.conv_transpose2d(out, self.haar_weights, bias=None, stride=2, groups = self.channel_in),logdet
