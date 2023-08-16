@@ -207,6 +207,11 @@ class CondAffineSeparatedAndCond(nn.Module):
 
         for _ in range(n_hidden_layers):
             layers.append(Conv2d(hidden_channels, hidden_channels, kernel_size=[kernel_hidden, kernel_hidden]))
+            if(self.version==2):
+                CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1)
+                layers.append(Conv2d(hidden_channels, 2*hidden_channels, kernel_size=[kernel_hidden, kernel_hidden]))
+                layers.append(Conv2d(2*hidden_channels, hidden_channels, kernel_size=[kernel_hidden, kernel_hidden]))
+                CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1),CBAMBlock("Conv", 3, channels = self.channels_for_co * 2, gamma = 2, b = 1)
             layers.append(nn.ReLU(inplace=False))
         layers.append(Conv2dZeros(hidden_channels, out_channels))
         if(model!=None):
